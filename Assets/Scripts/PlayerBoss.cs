@@ -18,15 +18,15 @@ public class PlayerBoss : MonoBehaviour
 
     void Start()
     {
-        rb=GetComponent<Rigidbody2D>();
-       
+        rb = GetComponent<Rigidbody2D>();
+        StartCoroutine(AutoFire());
     }
 
-   
+
     void Update()
     {
         PlayerMovement();
-        PlayerAttack();
+        
     }
 
 
@@ -43,41 +43,23 @@ public class PlayerBoss : MonoBehaviour
             {
                 healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
             }
-            if(health <= 0)
+            if (health <= 0)
             {
                 Time.timeScale = 0;
             }
 
             Debug.Log("Can Azaldý! Yeni Can: " + health);
 
-            
+
         }
 
     }
 
-    void PlayerAttack()
-    {
-        if(Input.GetMouseButtonDown(0))
-        {
 
-            GameObject bullet=Instantiate(Bullet,BulletPoint.position,Quaternion.identity);
 
-            
-
-            Rigidbody2D rbBullet=bullet.GetComponent<Rigidbody2D>();    
-
-            if(rbBullet != null)
-            {
-                rbBullet.velocity = Vector2.right * bulletPower;
-            }
-            Destroy(bullet, 4f);
-
-        }
-    }
-    
     void PlayerMovement()
 
-        {
+    {
         if (Input.GetKey(KeyCode.Space))
         {
             rb.gravityScale = 0;
@@ -87,5 +69,25 @@ public class PlayerBoss : MonoBehaviour
         {
             rb.gravityScale = 1;
         }
+    }
+
+
+    IEnumerator AutoFire()
+    {
+        while (true) 
+        {
+            yield return new WaitForSeconds(2f); 
+
+         
+            GameObject bullet = Instantiate(Bullet, BulletPoint.position, Quaternion.identity);
+            Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
+
+            if (rbBullet != null)
+            {
+                rbBullet.velocity = Vector2.right * bulletPower;
+            }
+
+            Destroy(bullet, 4f); 
         }
+    }
 }

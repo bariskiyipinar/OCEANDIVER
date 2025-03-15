@@ -4,30 +4,32 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Boss1 : MonoBehaviour
+public class Boss2 : MonoBehaviour
 {
     public float BossMoveSpeed = 2f;
     public float MinY = -1.8f;
     public float MaxY = 3.5f;
 
-    public float health = 1000f; // CAN 1000 OLDU
-    private float maxHealth = 1000f;
+    public float health = 2000f; // CAN 1000 OLDU
+    private float maxHealth = 2000f;
     public Image healthBar; // UI'deki can barı (Image olarak ayarlandı)
 
     private float direction = 1f;
 
     public GameObject FishPrefab;
+    public GameObject FishPrefab2;
+    
     public float FishPower = 5f;
     public float FishSpawnInterval = 2f;
 
-
-   
     public Animator BossDeath;
 
     void Start()
     {
-       
         InvokeRepeating("FishEnemy", 2f, FishSpawnInterval);
+        InvokeRepeating("FishEnemyVertical", 10f,10f);  // İlki 10 sn sonra bu engel gelsin sonrasında ki
+                                                        // 10 sn ise 10 sn de bir gelmeye devam etsin.
+
 
         if (healthBar != null)
         {
@@ -38,6 +40,7 @@ public class Boss1 : MonoBehaviour
     void Update()
     {
         BossMovement();
+       
     }
 
     public void FishEnemy()
@@ -45,18 +48,47 @@ public class Boss1 : MonoBehaviour
         if (FishPrefab != null)
         {
             GameObject newFish = Instantiate(FishPrefab, transform.position, Quaternion.identity);
+           
             Rigidbody2D rb = newFish.GetComponent<Rigidbody2D>();
 
             if (rb != null)
             {
                 rb.velocity = Vector2.left * FishPower;
-                newFish.transform.localScale = new Vector3(4, 4, 4);
+                newFish.transform.localScale = new Vector3(3, 3, 3);
                 newFish.transform.localRotation = Quaternion.Euler(0, 180, 0);
             }
+
+          
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void FishEnemyVertical()
+    {
+        if (FishPrefab2 != null)
+        {
+            Vector2[] spawnPositions =
+            {
+            new Vector2(-7f, 3.6f),
+            new Vector2(-7f, 1.80f),
+            new Vector2(-7f, -1.30f),
+            new Vector2(-7f, -2.80f)
+        };
+
+            foreach (Vector2 pos in spawnPositions)
+            {
+                GameObject newFish = Instantiate(FishPrefab2, pos, Quaternion.identity);
+                Rigidbody2D rb = newFish.GetComponent<Rigidbody2D>();
+
+                if (rb != null)
+                {
+                    rb.velocity = Vector2.left * FishPower;
+                    newFish.transform.localScale = new Vector3(3, 3, 3);
+                    newFish.transform.localRotation = Quaternion.Euler(0, 180, 0);
+                }
+            }
+        }
+    }
+        private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
@@ -65,7 +97,6 @@ public class Boss1 : MonoBehaviour
 
             if (healthBar != null)
             {
-              
                 float HealtBarScale = Mathf.Clamp01(health / maxHealth);
                 healthBar.transform.localScale = new Vector3(HealtBarScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
             }
@@ -101,17 +132,11 @@ public class Boss1 : MonoBehaviour
         }
 
         yield return new WaitForSeconds(1.5f);
-        DestroyEvent();
+
+      
+       
     }
 
-    public void DestroyEvent()
-    {
-        Debug.Log("Boss yok edildi ve sahne değiştiriliyor...");
-        Destroy(this.gameObject);
-        SceneManager.LoadScene(3);
-    }
-
-
-
-
+   
+ 
 }

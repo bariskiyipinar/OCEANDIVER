@@ -3194,7 +3194,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300006, guid: 7f693c6fbc46f4747a546f7368862469, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9ac146eb965354e8dabdbeef12886ea6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3242,7 +3242,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: -3.0913315, y: 0.5, z: 0}
-  m_LocalScale: {x: 19.602907, y: 19.602907, z: 19.602907}
+  m_LocalScale: {x: 10.13062, y: 10.13062, z: 10.13062}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -3279,9 +3279,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.01, y: -0.03}
+  m_Offset: {x: 0.030165778, y: -0.022243885}
   serializedVersion: 2
-  m_Radius: 0.09
+  m_Radius: 0.20944338
 --- !u!95 &95589758418870088
 Animator:
   serializedVersion: 5
@@ -3292,7 +3292,7 @@ Animator:
   m_GameObject: {fileID: 1849596688694448}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8525263c8b9664aeabed57396c6594e7, type: 2}
+  m_Controller: {fileID: 9100000, guid: c5e2c131d878a4ec997a0ce0d3d9ccc6, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -3344,7 +3344,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7f693c6fbc46f4747a546f7368862469, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9ac146eb965354e8dabdbeef12886ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3364,15 +3364,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1849596688694448}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f16c6c027d80994e8ffec8020b2ea4c, type: 3}
+  m_Script: {fileID: 11500000, guid: 28940221a20da4b42bbc825f3617f168, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   BossMoveSpeed: 2
   MinY: -1.8
   MaxY: 3.5
-  health: 1000
+  health: 2000
   healthBar: {fileID: 1265864840}
-  FishPrefab: {fileID: 6269690526859341103, guid: 9b86963740419794f8d03937f3af49cf, type: 3}
+  FishPrefab: {fileID: 3007301194719676295, guid: 8ed29ebf1a6760845955a89dfdcf63b1, type: 3}
+  FishPrefab2: {fileID: 6269690526859341103, guid: 9b86963740419794f8d03937f3af49cf, type: 3}
   FishPower: 5
   FishSpawnInterval: 2
   BossDeath: {fileID: 95589758418870088}
@@ -3441,7 +3442,7 @@ Transform:
   m_GameObject: {fileID: 271848188912394518}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.14110865, w: 0.98999417}
-  m_LocalPosition: {x: -16.8, y: 0.07, z: 0}
+  m_LocalPosition: {x: -16.74, y: 0.22, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children:

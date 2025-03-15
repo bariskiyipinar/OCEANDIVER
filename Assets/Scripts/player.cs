@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+
 public class Player : MonoBehaviour
 {
     private Rigidbody2D rb;
@@ -13,17 +14,27 @@ public class Player : MonoBehaviour
     public Text CoinText;
     private int CoinCount = 0;
     public  float health = 100f; // Can deðeri baþlangýçta 100 olsun
+    public Animator ÝsdeadPlayer;
+    public GameObject GameOverPanel;
 
-    
+    private bool isGameOver = false;
+    public AudioSource BgSound;
+    public Animator GameOverAnim;
+    private AudioSource CoinSound;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         CoinText.text = "" + CoinCount;
+        CoinSound = GetComponent<AudioSource>();
+        
     }
 
     void Update()
     {
-        PlayerMovement();
+        if (!isGameOver)  
+        {
+            PlayerMovement();
+        }
     }
 
     void PlayerMovement()
@@ -50,10 +61,20 @@ public class Player : MonoBehaviour
 
             float healthScale = Mathf.Clamp01(health / 100f); // 0 ile 1 arasýnda sýnýrla
 
-            // Can barýnýn X ekseninde küçülmesini saðla
+            
             if (healthBar != null)
             {
                 healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
+            }
+
+            if(health <= 0 && ÝsdeadPlayer != null)
+            {
+                StartCoroutine(diePlayer(3));
+                BgSound.Stop();
+            }
+            else
+            {
+                ÝsdeadPlayer.SetBool("Ýsdead", false);
             }
 
             Debug.Log("Can Azaldý! Yeni Can: " + health);
@@ -65,6 +86,7 @@ public class Player : MonoBehaviour
         {
             CoinCount++;
             CoinText.text = CoinCount.ToString();
+            CoinSound.Play();
             Destroy(collision.gameObject);
 
         }
@@ -73,5 +95,28 @@ public class Player : MonoBehaviour
         {
             SceneManager.LoadScene("Boss1");
         }
+        if (collision.gameObject.CompareTag("Finish2"))
+        {
+            SceneManager.LoadScene("Boss2");
+        }
     }
+
+    IEnumerator diePlayer(int delay)
+    {
+        ÝsdeadPlayer.SetBool("Ýsdead", true);
+
+        speed = 0;
+        rb.velocity = Vector2.zero;
+        rb.gravityScale=0;
+
+        GameOverAnim.Play("gameOverAnim");
+
+        isGameOver = true;
+
+        yield return new  WaitForSeconds(delay);
+        GameOverPanel.SetActive(true);
+        Time.timeScale = 0;
+    }
+
+    
 }

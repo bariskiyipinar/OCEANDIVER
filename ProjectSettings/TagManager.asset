@@ -11,6 +11,8 @@ TagManager:
   - DestroyFish
   - Bullet
   - DestroyBullet
+  - Finish2
+  - Fish2
   layers:
   - Default
   - TransparentFX
