@@ -108,7 +108,7 @@ public class Boss1 : MonoBehaviour
     {
         Debug.Log("Boss yok edildi ve sahne değiştiriliyor...");
         Destroy(this.gameObject);
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene("LevelScene");
     }
 
 

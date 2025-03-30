@@ -16,17 +16,18 @@ public class PlayerBoss : MonoBehaviour
     private float bulletPower = 10f;
     public Transform BulletPoint;
 
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        StartCoroutine(AutoFire());
+     
     }
 
 
     void Update()
     {
         PlayerMovement();
-        
+
     }
 
 
@@ -60,34 +61,46 @@ public class PlayerBoss : MonoBehaviour
     void PlayerMovement()
 
     {
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.touchCount > 0)
         {
-            rb.gravityScale = 0;
-            rb.velocity = Vector2.up * playerPower;
+            Touch touch = Input.GetTouch(0);
+
+            if (touch.phase == TouchPhase.Began)
+            {
+                rb.gravityScale = 0;
+                rb.velocity = Vector2.up * playerPower;
+            }
+            else
+            {
+
+                rb.gravityScale = 1;
+            }
         }
-        else
+
+
+       
+    }
+    
+    private void BulletAttack()
+    {
+        GameObject bullet = Instantiate(Bullet, BulletPoint.position, Quaternion.identity);
+        Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
+
+        if (rbBullet != null)
         {
-            rb.gravityScale = 1;
+            rbBullet.velocity = Vector2.right * bulletPower;
         }
+
+        Destroy(bullet, 4f);
+
     }
 
+           
+      
 
-    IEnumerator AutoFire()
+    public void FireButton()
     {
-        while (true) 
-        {
-            yield return new WaitForSeconds(2f); 
-
-         
-            GameObject bullet = Instantiate(Bullet, BulletPoint.position, Quaternion.identity);
-            Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
-
-            if (rbBullet != null)
-            {
-                rbBullet.velocity = Vector2.right * bulletPower;
-            }
-
-            Destroy(bullet, 4f); 
-        }
+      
+        BulletAttack();
     }
 }

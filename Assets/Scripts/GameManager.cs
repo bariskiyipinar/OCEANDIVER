@@ -1,49 +1,62 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
+    public int CoinCount = 0;
 
-    public GameObject settings;
-    public GameObject Continuebutton;
-    public GameObject restart;
-    public GameObject Mainmenu;
-
- 
-    private void Update()
+    void Awake()
     {
-        if(Input.GetKeyDown(KeyCode.Return))
+        if (instance == null)
         {
-            SceneManager.LoadScene(1);
+            instance = this;
+            DontDestroyOnLoad(gameObject); // Sahne deðiþse bile GameManager yok olmaz
+        }
+        else
+        {
+            Destroy(gameObject);
         }
     }
 
-
-    public void Settings()
+    void Start()
     {
-        settings.SetActive(true);
-        Time.timeScale = 0;
+        if (!PlayerPrefs.HasKey("Coin"))
+        {
+            PlayerPrefs.SetInt("Coin", 0);
+            PlayerPrefs.Save();
+        }
+
+        CoinCount = PlayerPrefs.GetInt("Coin", 0);
+  
     }
 
-    public void ContinueButton()
+    public void AddCoin(int amount)
     {
-        settings.SetActive(false);
-        Time.timeScale = 1;
+        CoinCount += amount;
+        PlayerPrefs.SetInt("Coin", CoinCount);
+        PlayerPrefs.Save();
     }
 
-    public void Restart()
+    public void ResetCoins()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        Time.timeScale = 1;
+        CoinCount = 0;
+        PlayerPrefs.SetInt("Coin", 0);
+        PlayerPrefs.Save();
     }
 
-    public void MainMenu()
+    public void LoadLevel1()
     {
-        SceneManager.LoadScene(0);
-        Time.timeScale = 1;
+     
+        SceneManager.LoadScene("Level1");
     }
-
+    public void quitGame()
+    {
+       
+        Application.Quit();
+       
+        
+    }
 }

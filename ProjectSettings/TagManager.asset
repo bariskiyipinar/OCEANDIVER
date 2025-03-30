@@ -13,6 +13,7 @@ TagManager:
   - DestroyBullet
   - Finish2
   - Fish2
+  - Fast
   layers:
   - Default
   - TransparentFX

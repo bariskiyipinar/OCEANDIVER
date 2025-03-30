@@ -2,36 +2,57 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
-
 
 public class Player : MonoBehaviour
 {
     private Rigidbody2D rb;
-    private float playerPower = 5f;
+    public float playerPower = 5f;
     public int speed = 3;
-    public GameObject healthBar; // Can barý objesi
+    public GameObject healthBar;
+
     public Text CoinText;
-    private int CoinCount = 0;
-    public  float health = 100f; // Can deðeri baþlangýçta 100 olsun
+    public int health = 100;
     public Animator ÝsdeadPlayer;
     public GameObject GameOverPanel;
 
     private bool isGameOver = false;
-    public AudioSource BgSound;
+    public AudioSource CharacterDamageSound;
     public Animator GameOverAnim;
+    public AudioSource BgSound;
     private AudioSource CoinSound;
+
+    private bool isTouching = false;
+    public bool isFast = false;
+
+    public static bool  istouchfinish1, istouchfinish2;
+    private EnvÝtems envitems;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        CoinText.text = "" + CoinCount;
         CoinSound = GetComponent<AudioSource>();
-        
+        GameOverAnim.gameObject.SetActive(false);
+        envitems = FindObjectOfType<EnvÝtems>();
+        if (envitems == null)
+        {
+            Debug.LogWarning("EnvÝtems bulunamadý, FastSwim çalýþmayabilir.");
+        }
+
+        if (GameManager.instance != null)
+        {
+            UpdateCoinText();
+        }
+        else
+        {
+            Debug.LogWarning("GameManager sahnede bulunamadý! Coinler kaydedilmeyebilir.");
+        }
     }
 
     void Update()
     {
-        if (!isGameOver)  
+        if (!isGameOver)
         {
             PlayerMovement();
         }
@@ -39,36 +60,45 @@ public class Player : MonoBehaviour
 
     void PlayerMovement()
     {
-
-        transform.Translate(Vector2.right * speed * Time.deltaTime);
-
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.touchCount > 0)
         {
-            rb.gravityScale = 0;
-            rb.velocity = Vector2.up * playerPower;
+            Touch touch = Input.GetTouch(0);
+
+            if (touch.phase == TouchPhase.Began && !isTouching)
+            {
+                isTouching = true;
+                rb.gravityScale = 0;
+                rb.velocity = Vector2.up * playerPower;
+            }
+            else
+            {
+                isTouching = false;
+                rb.gravityScale = 1;
+            }
         }
-        else
+
+        if (!isTouching || isFast)
         {
-            rb.gravityScale = 1;
+            transform.Translate(Vector2.right * speed * Time.deltaTime);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Fish"))
+        if (collision.CompareTag("Fish") && !isFast)
         {
-            health -= 10f; // Caný 10 azalt
+            health -= 10;
+            CharacterDamageSound.Play();
+            float healthScale = Mathf.Clamp01(health / 100f);
 
-            float healthScale = Mathf.Clamp01(health / 100f); // 0 ile 1 arasýnda sýnýrla
-
-            
             if (healthBar != null)
             {
                 healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
             }
 
-            if(health <= 0 && ÝsdeadPlayer != null)
+            if (health <= 0)
             {
+                
                 StartCoroutine(diePlayer(3));
                 BgSound.Stop();
             }
@@ -76,47 +106,74 @@ public class Player : MonoBehaviour
             {
                 ÝsdeadPlayer.SetBool("Ýsdead", false);
             }
-
-            Debug.Log("Can Azaldý! Yeni Can: " + health);
         }
-
-
 
         if (collision.CompareTag("Coin"))
         {
-            CoinCount++;
-            CoinText.text = CoinCount.ToString();
-            CoinSound.Play();
-            Destroy(collision.gameObject);
+            if (GameManager.instance != null)
+            {
+                GameManager.instance.AddCoin(1);
+                UpdateCoinText();
+            }
 
+            if (CoinSound != null)
+            {
+                CoinSound.Play();
+            }
+
+            Destroy(collision.gameObject);
         }
 
-        if (collision.gameObject.CompareTag("Finish1"))
+        if (collision.CompareTag("Finish1"))
         {
+            istouchfinish1 = true;  // Önce deðiþkeni güncelle
             SceneManager.LoadScene("Boss1");
         }
-        if (collision.gameObject.CompareTag("Finish2"))
+
+        if (collision.CompareTag("Finish2"))
         {
+            istouchfinish2 = true;
             SceneManager.LoadScene("Boss2");
         }
-    }
 
+        if (collision.CompareTag("Fast") && envitems != null)
+        {
+            StartCoroutine(envitems.FastSwim(3));
+            Destroy(collision.gameObject);
+        }
+    }
     IEnumerator diePlayer(int delay)
     {
         ÝsdeadPlayer.SetBool("Ýsdead", true);
-
         speed = 0;
         rb.velocity = Vector2.zero;
-        rb.gravityScale=0;
+        rb.gravityScale = 0;
 
-        GameOverAnim.Play("gameOverAnim");
-
+       
         isGameOver = true;
 
-        yield return new  WaitForSeconds(delay);
+        GameOverAnim.gameObject.SetActive(true);
+       GameOverAnim.Play("gameOverAnim");
+           
+       
+
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.ResetCoins(); // Coinleri sýfýrla
+            UpdateCoinText(); // UI'deki coin sayýsýný da güncelle
+        }
+
+        yield return new WaitForSeconds(delay);
         GameOverPanel.SetActive(true);
         Time.timeScale = 0;
     }
 
-    
+
+    public void UpdateCoinText()
+    {
+        if (CoinText != null && GameManager.instance != null)
+        {
+            CoinText.text = GameManager.instance.CoinCount.ToString();
+        }
+    }
 }
