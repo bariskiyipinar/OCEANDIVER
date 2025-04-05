@@ -200,7 +200,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 126133899}
   m_OnClick:
     m_PersistentCalls:
@@ -332,7 +332,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 397117595}
   m_OnClick:
     m_PersistentCalls:
@@ -715,7 +715,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 1263508664}
   m_OnClick:
     m_PersistentCalls:
@@ -1024,10 +1024,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings: {fileID: 0}
-  Continuebutton: {fileID: 0}
-  restart: {fileID: 0}
-  Mainmenu: {fileID: 0}
-  level2: {fileID: 397117594}
+  MarketMenu: {fileID: 0}
 --- !u!4 &1904284691
 Transform:
   m_ObjectHideFlags: 0

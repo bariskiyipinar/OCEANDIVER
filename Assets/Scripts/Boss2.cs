@@ -69,8 +69,8 @@ public class Boss2 : MonoBehaviour
             Vector2[] spawnPositions =
             {
             new Vector2(-7f, 3.6f),
-            new Vector2(-7f, 1.80f),
-            new Vector2(-7f, -1.30f),
+            new Vector2(-7f, 2f),
+            new Vector2(-7f, -2f),
             new Vector2(-7f, -2.80f)
         };
 
@@ -92,7 +92,7 @@ public class Boss2 : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            health -= 100f; // Hasar alıyor
+            health -= 100f; 
             Debug.Log("Boss Canı: " + health);
 
             if (healthBar != null)

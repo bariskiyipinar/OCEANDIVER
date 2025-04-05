@@ -60,7 +60,7 @@ public class Boss1 : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            health -= 100f; // Hasar alıyor
+            health -= 100f; 
             Debug.Log("Boss Canı: " + health);
 
             if (healthBar != null)

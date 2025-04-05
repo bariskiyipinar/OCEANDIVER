@@ -8,23 +8,21 @@ public class UIManager : MonoBehaviour
 {
 
     public GameObject settings;
-    public GameObject Continuebutton;
-    public GameObject restart;
-    public GameObject Mainmenu;
+    //public Button level2;
+    public GameObject MarketMenu;
+    private Market market;
 
-   
-
-    public Button level2;
-
-  
-   
-    private void Update()
+    private void Start()
     {
-       if( Player.istouchfinish1 ==true)
-        {
-            level2.interactable = true;
-        }
+        market=FindAnyObjectByType<Market>();
     }
+    //private void Update()
+    //{
+    //   if( Player.istouchfinish1 ==true)
+    //    {
+    //        level2.interactable = true;
+    //    }
+    //}
 
 
     public void Level1()
@@ -64,5 +62,24 @@ public class UIManager : MonoBehaviour
     {
         SceneManager.LoadScene(0);
         Time.timeScale = 1;
+        
     }
+
+    public void Market()
+    {
+        MarketMenu.SetActive(true);
+        settings.SetActive(false);
+    }
+
+    public void MarketReturn()
+    {
+       
+        MarketMenu.SetActive(false);
+        Time.timeScale = 1;
+
+        market.MarketReturn();
+    }
+
+   
+  
 }

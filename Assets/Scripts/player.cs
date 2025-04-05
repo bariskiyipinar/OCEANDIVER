@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.UI;
 using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
+using UnityEngine;
 
 public class Player : MonoBehaviour
 {
@@ -29,12 +29,15 @@ public class Player : MonoBehaviour
     public static bool  istouchfinish1, istouchfinish2;
     private EnvÝtems envitems;
 
+   
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         CoinSound = GetComponent<AudioSource>();
         GameOverAnim.gameObject.SetActive(false);
         envitems = FindObjectOfType<EnvÝtems>();
+
         if (envitems == null)
         {
             Debug.LogWarning("EnvÝtems bulunamadý, FastSwim çalýþmayabilir.");
@@ -48,7 +51,12 @@ public class Player : MonoBehaviour
         {
             Debug.LogWarning("GameManager sahnede bulunamadý! Coinler kaydedilmeyebilir.");
         }
+       
+        
+       
+
     }
+
 
     void Update()
     {
@@ -56,6 +64,7 @@ public class Player : MonoBehaviour
         {
             PlayerMovement();
         }
+       
     }
 
     void PlayerMovement()
@@ -108,6 +117,29 @@ public class Player : MonoBehaviour
             }
         }
 
+        else if (collision.CompareTag("Fish2") && !isFast)
+        {
+            health -= 20;
+            CharacterDamageSound.Play();
+            float healthScale = Mathf.Clamp01(health / 100f);
+
+            if (healthBar != null)
+            {
+                healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
+            }
+
+            if (health <= 0)
+            {
+
+                StartCoroutine(diePlayer(3));
+                BgSound.Stop();
+            }
+            else
+            {
+                ÝsdeadPlayer.SetBool("Ýsdead", false);
+            }
+        }
+
         if (collision.CompareTag("Coin"))
         {
             if (GameManager.instance != null)
@@ -126,7 +158,7 @@ public class Player : MonoBehaviour
 
         if (collision.CompareTag("Finish1"))
         {
-            istouchfinish1 = true;  // Önce deðiþkeni güncelle
+            istouchfinish1 = true;  
             SceneManager.LoadScene("Boss1");
         }
 
@@ -142,7 +174,7 @@ public class Player : MonoBehaviour
             Destroy(collision.gameObject);
         }
     }
-    IEnumerator diePlayer(int delay)
+     IEnumerator diePlayer(int delay)
     {
         ÝsdeadPlayer.SetBool("Ýsdead", true);
         speed = 0;
@@ -153,14 +185,14 @@ public class Player : MonoBehaviour
         isGameOver = true;
 
         GameOverAnim.gameObject.SetActive(true);
-       GameOverAnim.Play("gameOverAnim");
+        GameOverAnim.Play("gameOverAnim");
            
        
 
         if (GameManager.instance != null)
         {
-            GameManager.instance.ResetCoins(); // Coinleri sýfýrla
-            UpdateCoinText(); // UI'deki coin sayýsýný da güncelle
+            GameManager.instance.ResetCoins(); 
+            UpdateCoinText(); 
         }
 
         yield return new WaitForSeconds(delay);
