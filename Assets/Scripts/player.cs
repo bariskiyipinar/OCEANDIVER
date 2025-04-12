@@ -96,7 +96,7 @@ public class Player : MonoBehaviour
     {
         if (collision.CompareTag("Fish") && !isFast)
         {
-            health -= 10;
+            health -= 5;
             CharacterDamageSound.Play();
             float healthScale = Mathf.Clamp01(health / 100f);
 
@@ -119,7 +119,29 @@ public class Player : MonoBehaviour
 
         else if (collision.CompareTag("Fish2") && !isFast)
         {
-            health -= 20;
+            health -= 7;
+            CharacterDamageSound.Play();
+            float healthScale = Mathf.Clamp01(health / 100f);
+
+            if (healthBar != null)
+            {
+                healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
+            }
+
+            if (health <= 0)
+            {
+
+                StartCoroutine(diePlayer(3));
+                BgSound.Stop();
+            }
+            else
+            {
+                ÝsdeadPlayer.SetBool("Ýsdead", false);
+            }
+        }
+        else if (collision.CompareTag("Fish3") && !isFast)
+        {
+            health -= 9;
             CharacterDamageSound.Play();
             float healthScale = Mathf.Clamp01(health / 100f);
 
@@ -168,11 +190,11 @@ public class Player : MonoBehaviour
             SceneManager.LoadScene("Boss2");
         }
 
-        if (collision.CompareTag("Fast") && envitems != null)
-        {
-            StartCoroutine(envitems.FastSwim(3));
-            Destroy(collision.gameObject);
-        }
+        //if (collision.CompareTag("Fast") && envitems != null)
+        //{
+        //    StartCoroutine(envitems.FastSwim(3));
+        //    Destroy(collision.gameObject);
+        //}
     }
      IEnumerator diePlayer(int delay)
     {

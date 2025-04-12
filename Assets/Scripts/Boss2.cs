@@ -22,7 +22,7 @@ public class Boss2 : MonoBehaviour
     public float FishPower = 5f;
     public float FishSpawnInterval = 2f;
 
-    public Animator BossDeath;
+    public ParticleSystem FishDeath;
 
     void Start()
     {
@@ -30,11 +30,12 @@ public class Boss2 : MonoBehaviour
         InvokeRepeating("FishEnemyVertical", 10f,10f);  // İlki 10 sn sonra bu engel gelsin sonrasında ki
                                                         // 10 sn ise 10 sn de bir gelmeye devam etsin.
 
-
+        FishDeath.Stop();
         if (healthBar != null)
         {
             healthBar.fillAmount = 1f; // Başlangıçta tamamen dolu
         }
+        
     }
 
     void Update()
@@ -122,21 +123,24 @@ public class Boss2 : MonoBehaviour
         }
     }
 
-    IEnumerator Die()
+    public IEnumerator Die()
     {
         Debug.Log("Boss Öldü!");
 
-        if (BossDeath != null)
-        {
-            BossDeath.SetBool("İsdead", true);
-        }
+        FishDeath.Play();
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(0.2f);
 
-      
+        DestroyEvent();
        
     }
 
-   
- 
+    public void DestroyEvent()
+    {
+        Debug.Log("Boss yok edildi ve sahne değiştiriliyor...");
+        Destroy(this.gameObject);
+        SceneManager.LoadScene("LevelScene");
+    }
+
+
 }

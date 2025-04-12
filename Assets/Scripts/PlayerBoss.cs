@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEditor.Timeline.TimelinePlaybackControls;
@@ -21,16 +22,25 @@ public class PlayerBoss : MonoBehaviour
     public Animator GameOverAnim;
     public Animator ÝsdeadPlayer;
     public GameObject GameOverPanel;
+
+    //DamageSound(Karakter Hasarý)
+
+    public AudioSource Damage;
+    private GameObject Backgroundsound;
+    private bool canShoot = true;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        Backgroundsound = GameObject.FindGameObjectWithTag("Sound");
+        
     }
 
 
     void Update()
     {
         PlayerMovement();
-
+       
     }
 
 
@@ -39,7 +49,7 @@ public class PlayerBoss : MonoBehaviour
         if (collision.CompareTag("Fish") )
         {
             health -= 10f; // Caný 10 azalt
-
+            Damage.Play();
             float healthScale = Mathf.Clamp01(health / 100f); // 0 ile 1 arasýnda sýnýrla
 
             // Can barýnýn X ekseninde küçülmesini saðla
@@ -57,7 +67,7 @@ public class PlayerBoss : MonoBehaviour
         else if (collision.CompareTag("Fish2"))
         {
             health -= 15f; // Caný 15 azalt
-
+            Damage.Play();
             float healthScale = Mathf.Clamp01(health / 100f); // 0 ile 1 arasýnda sýnýrla
 
             // Can barýnýn X ekseninde küçülmesini saðla
@@ -67,7 +77,9 @@ public class PlayerBoss : MonoBehaviour
             }
             if (health <= 0)
             {
+                Backgroundsound.GetComponent<AudioSource>().Stop();
                 StartCoroutine(diePlayer(3));
+               
             }
 
             Debug.Log("Can Azaldý! Yeni Can: " + health);
@@ -79,7 +91,7 @@ public class PlayerBoss : MonoBehaviour
         ÝsdeadPlayer.SetBool("Ýsdead", true);
         rb.velocity = Vector2.zero;
         rb.gravityScale = 0;
-       
+        
          
         GameOverAnim.gameObject.SetActive(true);
         GameOverAnim.Play("gameOverAnim");
@@ -118,22 +130,29 @@ public class PlayerBoss : MonoBehaviour
     {
         GameObject bullet = Instantiate(Bullet, BulletPoint.position, Quaternion.identity);
         Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
-
-        if (rbBullet != null)
+ 
+        if (rbBullet != null )
         {
             rbBullet.velocity = Vector2.right * bulletPower;
-        }
 
+        }
+       
         Destroy(bullet, 4f);
 
     }
 
-           
-      
-
     public void FireButton()
     {
-      
+      if(canShoot) { 
         BulletAttack();
+
+            canShoot = false;
+            Invoke("ResetcanShoot", 2f);
+        }
+    }
+
+    private void ResetcanShoot()
+    {
+        canShoot = true;
     }
 }

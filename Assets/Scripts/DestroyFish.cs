@@ -12,8 +12,15 @@ public class DestroyFish : MonoBehaviour
         {
             Destroy(collision.gameObject);
         }
+        if (collision.gameObject.CompareTag("Fish2"))
+        {
+            Destroy(collision.gameObject);
+        }
+        if (collision.gameObject.CompareTag("Fish3"))
+        {
+            Destroy(collision.gameObject);
+        }
 
-        
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
