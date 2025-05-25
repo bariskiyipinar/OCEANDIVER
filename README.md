@@ -24,9 +24,7 @@ Aşağıda oyuna ait bazı ekran görüntülerini bulabilirsiniz:
 |---------|---------|--------|
 | ![menu](screenshots/menu.png) | ![gameplay1](screenshots/Level.png) | ![market](screenshots/market.png) |
 
-| Boss Savaşı  1 | Boss Savaşı  2 | Level 1 |
-|-------------|----------------|--------------------------|------------|
-| ![boss](screenshots/Boss.png) | ![coins](screenshots/Boss2.png) | ![levelend](screenshots/Level1.png) |
+
 
 > 📸 Not: `screenshots/` klasörüne görsellerinizi aynı isimlerle eklemeyi unutmayın!
 
