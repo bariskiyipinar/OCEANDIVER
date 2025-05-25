@@ -20,9 +20,9 @@ Oyuncu, otomatik sağa kayan karakteri kontrol ederek zorlu engellerden ve düş
 
 Aşağıda oyuna ait bazı ekran görüntülerini bulabilirsiniz:
 
-| Ana Menü | Oynanış | Market |
+| Ana Menü | Leveller | Market |
 |---------|---------|--------|
-| ![menu](screenshots/menu.png) | ![gameplay1](screenshots/gameplay1.png) | ![market](screenshots/market.png) |
+| ![menu](screenshots/menu.png) | ![gameplay1](screenshots/Level.png) | ![market](screenshots/market.png) |
 
 | Boss Savaşı | Altın Toplama | Oyuncu Hasar Aldığında | Level Sonu |
 |-------------|----------------|--------------------------|------------|
