@@ -17,6 +17,9 @@ TagManager:
   - Sound
   - Fish3
   - TriggerRocket1
+  - Finish3
+  - Finish4
+  - Fish4
   layers:
   - Default
   - TransparentFX

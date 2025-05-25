@@ -10,9 +10,9 @@ public class Boss1 : MonoBehaviour
     public float MinY = -1.8f;
     public float MaxY = 3.5f;
 
-    public float health = 1000f; // CAN 1000 OLDU
+    public float health = 1000f; 
     private float maxHealth = 1000f;
-    public Image healthBar; // UI'deki can barı (Image olarak ayarlandı)
+    public Image healthBar; 
 
     private float direction = 1f;
 
@@ -31,7 +31,7 @@ public class Boss1 : MonoBehaviour
 
         if (healthBar != null)
         {
-            healthBar.fillAmount = 1f; // Başlangıçta tamamen dolu
+            healthBar.fillAmount = 1f; 
         }
     }
 

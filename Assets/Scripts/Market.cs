@@ -3,11 +3,15 @@ using UnityEngine.UI;
 
 public class Market : MonoBehaviour
 {
-    public GameObject SpeedÝtemPrefab; // Speed item prefab'ý
-    private EnvÝtems envitems; // Çevre öðeleri
-    private GameObject[] env = new GameObject[3]; // Envanterdeki öðeler
-    public Text CoinCount; // Coin UI Text
-    public Player player; // Player referansý
+    public GameObject SpeedÝtemPrefab; 
+    public GameObject HealthÝtemPrefab;
+    private EnvÝtems envitems; 
+    private GameObject[] env = new GameObject[3]; 
+    public Text CoinCount; 
+    public Player player; 
+    public Text Health;
+
+   
 
 
 
@@ -15,11 +19,14 @@ public class Market : MonoBehaviour
     {
         envitems = FindObjectOfType<EnvÝtems>();
         player = FindAnyObjectByType<Player>();
-        UpdateCoinText(); // Oyunun baþýnda coin miktarýný güncelle
+        UpdateCoinText();
+
+
     }
     private void Update()
     {
         UpdateCoinText();
+        UpdateHealth();
     }
     public void SpeedItemButton()
     {
@@ -45,18 +52,80 @@ public class Market : MonoBehaviour
             Debug.Log("Yeterli paranýz yok!");
         }
     }
-   
+    public void HealthItemButton()
+    {
+        if(player.health < 100) {
+        if (GameManager.instance.CoinCount >= 25)
+        {
+              
+            for (int i = 0; i < env.Length; i++)
+            {
+                if (env[i] == null)
+                {
+                    env[1] = HealthÝtemPrefab;
+                    GameManager.instance.CoinCount -= 25;
+                    player.UpdateCoinText();
+                    Debug.Log("Health item satýn alýndý!");
+                    return;
+                }
+            }
+
+            Debug.Log("Envanter dolu!");
+        }
+        else
+        {
+            Debug.Log("Yeterli paranýz yok!");
+        }
+        }
+    }
+
+    public void BulletItemButton()
+    {
+       
+            if (GameManager.instance.CoinCount >= 30)
+            {
+
+                for (int i = 0; i < env.Length; i++)
+                {
+                    if (env[i] == null)
+                    {
+                        env[2] = envitems.Bullet;
+                        GameManager.instance.CoinCount -= 30;
+                        player.UpdateCoinText();
+                        Debug.Log("Health item satýn alýndý!");
+                        return;
+                    }
+                }
+
+                Debug.Log("Envanter dolu!");
+            }
+            else
+            {
+                Debug.Log("Yeterli paranýz yok!");
+            }
+        
+    }
 
 
     public void MarketReturn()
     {
 
-            if (env[0] == SpeedÝtemPrefab) // DÝREKT KONTROL
+            if (env[0] == SpeedÝtemPrefab) 
             {
                 envitems.StartFastSwim(3);
                 env[0] = null;
             }
-     
+            if (env[1] == HealthÝtemPrefab)
+            {
+                envitems.HealthItem(); 
+                env[1] = null;
+            }
+            if (env[2] == envitems.Bullet)
+            {
+                envitems.StartShooting(10f);
+                env[2] = null;
+            }
+
     }
 
     public void UpdateCoinText()
@@ -64,6 +133,14 @@ public class Market : MonoBehaviour
         if (CoinCount != null && GameManager.instance != null)
         {
             CoinCount.text = GameManager.instance.CoinCount.ToString();
+        }
+    }
+
+    public void UpdateHealth()
+    {
+        if ((Health !=null && player.health !=null))
+        {
+            Health.text=player.health.ToString();
         }
     }
 }

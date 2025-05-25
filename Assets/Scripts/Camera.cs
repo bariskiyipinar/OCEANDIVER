@@ -37,13 +37,13 @@ public class Camera : MonoBehaviour
         // Bu oran, 0 ile 1 arasýnda bir deðer olacak, böylece slider ve resim ilerleyecek.
         float progress = Mathf.InverseLerp(0, levelEndPoint.position.x, Character.position.x);
 
-        // Slider'ýn deðerini güncelle
+      
         progressSlider.value = progress;
 
-        // Fill image'ýný güncelle
+     
         if (fillImage != null)
         {
-            fillImage.fillAmount = progress; // Slider'ýn deðerine göre doluluk oranýný ayarla
+            fillImage.fillAmount = progress; 
             
         }
        

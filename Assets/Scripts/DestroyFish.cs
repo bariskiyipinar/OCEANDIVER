@@ -25,7 +25,7 @@ public class DestroyFish : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Bullet(Mermi Yok Etmek)
+       
 
         if (collision.gameObject.CompareTag("Bullet"))
         {

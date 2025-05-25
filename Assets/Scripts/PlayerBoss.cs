@@ -10,11 +10,11 @@ public class PlayerBoss : MonoBehaviour
     private Rigidbody2D rb;
     private float playerPower = 5f;
 
-    //Health(Can)
+  
     public float health = 100f;
     public Image healthBar;
 
-    //Bullet(Mermi)
+
     public GameObject Bullet;
     private float bulletPower = 10f;
     public Transform BulletPoint;
@@ -23,7 +23,7 @@ public class PlayerBoss : MonoBehaviour
     public Animator ÝsdeadPlayer;
     public GameObject GameOverPanel;
 
-    //DamageSound(Karakter Hasarý)
+   
 
     public AudioSource Damage;
     private GameObject Backgroundsound;
@@ -48,11 +48,11 @@ public class PlayerBoss : MonoBehaviour
     {
         if (collision.CompareTag("Fish") )
         {
-            health -= 10f; // Caný 10 azalt
+            health -= 10f; 
             Damage.Play();
-            float healthScale = Mathf.Clamp01(health / 100f); // 0 ile 1 arasýnda sýnýrla
+            float healthScale = Mathf.Clamp01(health / 100f); 
 
-            // Can barýnýn X ekseninde küçülmesini saðla
+           
             if (healthBar != null)
             {
                 healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
@@ -66,11 +66,11 @@ public class PlayerBoss : MonoBehaviour
         }
         else if (collision.CompareTag("Fish2"))
         {
-            health -= 15f; // Caný 15 azalt
+            health -= 15f; 
             Damage.Play();
-            float healthScale = Mathf.Clamp01(health / 100f); // 0 ile 1 arasýnda sýnýrla
+            float healthScale = Mathf.Clamp01(health / 100f); 
 
-            // Can barýnýn X ekseninde küçülmesini saðla
+            
             if (healthBar != null)
             {
                 healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
@@ -117,7 +117,6 @@ public class PlayerBoss : MonoBehaviour
             }
             else
             {
-
                 rb.gravityScale = 1;
             }
         }

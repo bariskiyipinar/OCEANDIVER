@@ -26,9 +26,10 @@ public class Player : MonoBehaviour
     private bool isTouching = false;
     public bool isFast = false;
 
-    public static bool  istouchfinish1, istouchfinish2;
+    public static bool istouchfinish1, istouchfinish2, istouchfinish3, istouchfinish4;
     private EnvÝtems envitems;
-
+    private SpriteRenderer playerRenderer;
+    private bool Ýscolor = false;
    
 
     void Start()
@@ -37,7 +38,7 @@ public class Player : MonoBehaviour
         CoinSound = GetComponent<AudioSource>();
         GameOverAnim.gameObject.SetActive(false);
         envitems = FindObjectOfType<EnvÝtems>();
-
+        playerRenderer=GetComponent<SpriteRenderer>();
         if (envitems == null)
         {
             Debug.LogWarning("EnvÝtems bulunamadý, FastSwim çalýþmayabilir.");
@@ -51,8 +52,7 @@ public class Player : MonoBehaviour
         {
             Debug.LogWarning("GameManager sahnede bulunamadý! Coinler kaydedilmeyebilir.");
         }
-       
-        
+
        
 
     }
@@ -97,6 +97,10 @@ public class Player : MonoBehaviour
         if (collision.CompareTag("Fish") && !isFast)
         {
             health -= 5;
+            playerRenderer.color = Color.red;
+            Ýscolor = true;
+            StartCoroutine(ResetColor(0.3f));
+            
             CharacterDamageSound.Play();
             float healthScale = Mathf.Clamp01(health / 100f);
 
@@ -104,7 +108,6 @@ public class Player : MonoBehaviour
             {
                 healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
             }
-
             if (health <= 0)
             {
                 
@@ -120,7 +123,13 @@ public class Player : MonoBehaviour
         else if (collision.CompareTag("Fish2") && !isFast)
         {
             health -= 7;
+            playerRenderer.color = Color.red;
+            Ýscolor = true;
+            StartCoroutine(ResetColor(0.3f));
+
+
             CharacterDamageSound.Play();
+
             float healthScale = Mathf.Clamp01(health / 100f);
 
             if (healthBar != null)
@@ -142,6 +151,9 @@ public class Player : MonoBehaviour
         else if (collision.CompareTag("Fish3") && !isFast)
         {
             health -= 9;
+            playerRenderer.color = Color.red;
+            Ýscolor = true;
+            StartCoroutine(ResetColor(0.3f));
             CharacterDamageSound.Play();
             float healthScale = Mathf.Clamp01(health / 100f);
 
@@ -161,6 +173,33 @@ public class Player : MonoBehaviour
                 ÝsdeadPlayer.SetBool("Ýsdead", false);
             }
         }
+
+        else if (collision.CompareTag("Fish4") && !isFast)
+        {
+            health -= 10;
+            playerRenderer.color = Color.red;
+            Ýscolor = true;
+            StartCoroutine(ResetColor(0.3f));
+            CharacterDamageSound.Play();
+            float healthScale = Mathf.Clamp01(health / 100f);
+
+            if (healthBar != null)
+            {
+                healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
+            }
+
+            if (health <= 0)
+            {
+
+                StartCoroutine(diePlayer(3));
+                BgSound.Stop();
+            }
+            else
+            {
+                ÝsdeadPlayer.SetBool("Ýsdead", false);
+            }
+        }
+
 
         if (collision.CompareTag("Coin"))
         {
@@ -190,13 +229,22 @@ public class Player : MonoBehaviour
             SceneManager.LoadScene("Boss2");
         }
 
-        //if (collision.CompareTag("Fast") && envitems != null)
-        //{
-        //    StartCoroutine(envitems.FastSwim(3));
-        //    Destroy(collision.gameObject);
-        //}
+        if (collision.CompareTag("Finish3"))
+        {
+            istouchfinish3 = true;
+            SceneManager.LoadScene("Boss3");
+        }
+        if (collision.CompareTag("Finish4"))
+        {
+            istouchfinish4 = true;
+            SceneManager.LoadScene("Boss4");
+        }
+
+
+
+
     }
-     IEnumerator diePlayer(int delay)
+    IEnumerator diePlayer(int delay)
     {
         ÝsdeadPlayer.SetBool("Ýsdead", true);
         speed = 0;
@@ -229,5 +277,13 @@ public class Player : MonoBehaviour
         {
             CoinText.text = GameManager.instance.CoinCount.ToString();
         }
+    }
+
+    private  IEnumerator ResetColor(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        playerRenderer.color = Color.white;
+        Ýscolor = false;
+
     }
 }

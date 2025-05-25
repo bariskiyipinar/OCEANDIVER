@@ -7,10 +7,6 @@ public class RocketController : MonoBehaviour
     public float RocketSpeed = 5f;
     private bool Ismoving = false;
     public Player player;
-    private void Start()
-    {
-       
-    }
 
     void Update()
     {
@@ -30,7 +26,7 @@ public class RocketController : MonoBehaviour
         
         if (collision.gameObject.CompareTag("Player"))
         {
-           
+            player.CharacterDamageSound.Play();
             player.health -= 20;
             player.BgSound.Play();
             float healthScale = Mathf.Clamp01(player.health / 100f);
