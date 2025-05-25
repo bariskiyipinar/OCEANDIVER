@@ -26,7 +26,7 @@ Aşağıda oyuna ait bazı ekran görüntülerini bulabilirsiniz:
 
 | Boss Savaşı | Altın Toplama | Oyuncu Hasar Aldığında | Level Sonu |
 |-------------|----------------|--------------------------|------------|
-| ![boss](screenshots/boss.png) | ![coins](screenshots/coins.png) | ![hit](screenshots/hit.png) | ![levelend](screenshots/levelend.png) |
+| ![boss](screenshots/Boss.png) | ![coins](screenshots/Boss2.png) | ![levelend](screenshots/Level1.png) |
 
 > 📸 Not: `screenshots/` klasörüne görsellerinizi aynı isimlerle eklemeyi unutmayın!
 
