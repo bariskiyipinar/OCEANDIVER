@@ -1,19 +1,14 @@
 using System.Collections;
-using System.Collections.Generic;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class PlayerBoss : MonoBehaviour
 {
     private Rigidbody2D rb;
-    private float playerPower = 5f;
+    private float playerPower = 6f; 
 
-  
     public float health = 100f;
     public Image healthBar;
-
 
     public GameObject Bullet;
     private float bulletPower = 10f;
@@ -23,128 +18,129 @@ public class PlayerBoss : MonoBehaviour
     public Animator ÝsdeadPlayer;
     public GameObject GameOverPanel;
 
-   
-
     public AudioSource Damage;
     private GameObject Backgroundsound;
     private bool canShoot = true;
+
+    private bool isJumping = false;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         Backgroundsound = GameObject.FindGameObjectWithTag("Sound");
-        
     }
-
 
     void Update()
     {
         PlayerMovement();
-       
     }
-
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Fish") )
+        if (collision.CompareTag("Fish"))
         {
-            health -= 10f; 
-            Damage.Play();
-            float healthScale = Mathf.Clamp01(health / 100f); 
-
-           
-            if (healthBar != null)
-            {
-                healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
-            }
-            if (health <= 0)
-            {
-                StartCoroutine(diePlayer(3));
-            }
-
-            Debug.Log("Can Azaldý! Yeni Can: " + health);
+            TakeDamage(10f);
         }
         else if (collision.CompareTag("Fish2"))
         {
-            health -= 15f; 
-            Damage.Play();
-            float healthScale = Mathf.Clamp01(health / 100f); 
+            TakeDamage(15f);
+        }
+    }
 
-            
-            if (healthBar != null)
-            {
-                healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
-            }
-            if (health <= 0)
-            {
-                Backgroundsound.GetComponent<AudioSource>().Stop();
-                StartCoroutine(diePlayer(3));
-               
-            }
+    void TakeDamage(float damage)
+    {
+        health -= damage;
+        if (Damage != null) Damage.Play();
 
-            Debug.Log("Can Azaldý! Yeni Can: " + health);
+        float healthScale = Mathf.Clamp01(health / 100f);
+        if (healthBar != null)
+        {
+            healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
         }
 
+        if (health <= 0)
+        {
+            if (Backgroundsound != null)
+                Backgroundsound.GetComponent<AudioSource>().Stop();
+
+            StartCoroutine(diePlayer(3));
+        }
+
+        Debug.Log("Can Azaldý! Yeni Can: " + health);
     }
+
     IEnumerator diePlayer(int delay)
     {
         ÝsdeadPlayer.SetBool("Ýsdead", true);
         rb.velocity = Vector2.zero;
         rb.gravityScale = 0;
-        
-         
+
         GameOverAnim.gameObject.SetActive(true);
         GameOverAnim.Play("gameOverAnim");
 
-
         yield return new WaitForSeconds(delay);
+
         GameOverPanel.SetActive(true);
         Time.timeScale = 0;
     }
-  
 
     void PlayerMovement()
-
     {
-        if (Input.touchCount > 0)
+        if (!isJumping)
         {
-            Touch touch = Input.GetTouch(0);
+            bool jumpInput = false;
 
-            if (touch.phase == TouchPhase.Began)
+            // Mobil dokunmatik kontrolü
+            if (Input.touchCount > 0)
             {
-                rb.gravityScale = 0;
-                rb.velocity = Vector2.up * playerPower;
+                Touch touch = Input.GetTouch(0);
+                if (touch.phase == TouchPhase.Began)
+                {
+                    jumpInput = true;
+                }
             }
-            else
+
+            // PC ve WebGL mouse týklama kontrolü
+            if (Input.GetMouseButtonDown(0))
             {
-                rb.gravityScale = 1;
+                jumpInput = true;
+            }
+
+            if (jumpInput)
+            {
+                rb.gravityScale = 1; // Yerçekimi açýk kalsýn
+                rb.velocity = new Vector2(rb.velocity.x, 0); // Dikey hýzý sýfýrla
+                rb.AddForce(Vector2.up * playerPower, ForceMode2D.Impulse); // Yumuþak zýplama kuvveti
+                isJumping = true;
             }
         }
-
-
-       
+        else
+        {
+            if (rb.velocity.y <= 0)
+            {
+                isJumping = false;
+            }
+        }
     }
-    
+
     private void BulletAttack()
     {
         GameObject bullet = Instantiate(Bullet, BulletPoint.position, Quaternion.identity);
         Rigidbody2D rbBullet = bullet.GetComponent<Rigidbody2D>();
- 
-        if (rbBullet != null )
+
+        if (rbBullet != null)
         {
             rbBullet.velocity = Vector2.right * bulletPower;
-
         }
-       
-        Destroy(bullet, 4f);
 
+        Destroy(bullet, 4f);
     }
 
     public void FireButton()
     {
-      if(canShoot) { 
-        BulletAttack();
-
+        if (canShoot)
+        {
+            BulletAttack();
             canShoot = false;
             Invoke("ResetcanShoot", 2f);
         }

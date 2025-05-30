@@ -18,27 +18,30 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        market=FindAnyObjectByType<Market>();
-        level2.onClick.AddListener(ActiveLevels);
-        level3.onClick.AddListener(ActiveLevels);
-        level4.onClick.AddListener(ActiveLevels);
-    }
-    public void ActiveLevels()
-    {
-        if (Player.istouchfinish1 == true)
-        {
-            level2.interactable = true;
-        }
-        if (Player.istouchfinish2 == true)
-        {
-            level3.interactable = true;
-        }
-        if(Player.istouchfinish3 == true)
-        {
-            level4.interactable = true;
-        }
+        
+            if (SceneManager.GetActiveScene().name == "LevelScene")
+            {
+                level2.onClick.AddListener(ActiveLevels);
+                level3.onClick.AddListener(ActiveLevels);
+                level4.onClick.AddListener(ActiveLevels);
+            }
+
+            market = FindAnyObjectByType<Market>();
+       
 
     }
+  public void ActiveLevels()
+{
+    if (level2 != null && Player.istouchfinish1)
+        level2.interactable = true;
+
+    if (level3 != null && Player.istouchfinish2)
+        level3.interactable = true;
+
+    if (level4 != null && Player.istouchfinish3)
+        level4.interactable = true;
+}
+
     private void Update()
     {
         ActiveLevels();

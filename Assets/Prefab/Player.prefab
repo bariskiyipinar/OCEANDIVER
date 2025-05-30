@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 062b4d0478b8bc246b7ff05138588683, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPower: 5
+  playerPower: 3
   speed: 4
   healthBar: {fileID: 0}
   CoinText: {fileID: 0}

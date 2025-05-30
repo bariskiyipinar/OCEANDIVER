@@ -1,9 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.UI;
-using Unity.VisualScripting;
-using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -27,36 +25,24 @@ public class Player : MonoBehaviour
     public bool isFast = false;
 
     public static bool istouchfinish1, istouchfinish2, istouchfinish3, istouchfinish4;
-    private EnvÝtems envitems;
     private SpriteRenderer playerRenderer;
-    private bool Ýscolor = false;
-   
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         CoinSound = GetComponent<AudioSource>();
         GameOverAnim.gameObject.SetActive(false);
-        envitems = FindObjectOfType<EnvÝtems>();
-        playerRenderer=GetComponent<SpriteRenderer>();
-        if (envitems == null)
-        {
-            Debug.LogWarning("EnvÝtems bulunamadý, FastSwim çalýþmayabilir.");
-        }
+        playerRenderer = GetComponent<SpriteRenderer>();
 
         if (GameManager.instance != null)
         {
             UpdateCoinText();
         }
-        else
-        {
-            Debug.LogWarning("GameManager sahnede bulunamadý! Coinler kaydedilmeyebilir.");
-        }
 
-       
-
+        Vector3 viewPos = new Vector3(0.2f, 0.5f, 0f);
+        transform.position = UnityEngine.Camera.main.ViewportToWorldPoint(viewPos);
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
     }
-
 
     void Update()
     {
@@ -64,144 +50,72 @@ public class Player : MonoBehaviour
         {
             PlayerMovement();
         }
-       
     }
 
     void PlayerMovement()
     {
+        bool inputStarted = false;
+        bool inputEnded = false;
+
+        // Mouse input (PC/WebGL)
+        if (Input.GetMouseButtonDown(0))
+        {
+            inputStarted = true;
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            inputEnded = true;
+        }
+
+        // Touch input (Mobil)
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
-
-            if (touch.phase == TouchPhase.Began && !isTouching)
+            if (touch.phase == TouchPhase.Began)
             {
-                isTouching = true;
-                rb.gravityScale = 0;
-                rb.velocity = Vector2.up * playerPower;
+                inputStarted = true;
             }
-            else
+            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
             {
-                isTouching = false;
-                rb.gravityScale = 1;
+                inputEnded = true;
             }
         }
 
-        if (!isTouching || isFast)
+        if (inputStarted && !isTouching)
         {
-            transform.Translate(Vector2.right * speed * Time.deltaTime);
+            isTouching = true;
+        
+            rb.AddForce(Vector2.up * playerPower, ForceMode2D.Impulse);
         }
+
+        if (inputEnded)
+        {
+            isTouching = false;
+        }
+
+
+        transform.Translate(Vector2.right * speed * Time.deltaTime);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Fish") && !isFast)
+        if ((collision.CompareTag("Fish") ||
+            collision.CompareTag("Fish2") ||
+            collision.CompareTag("Fish3") ||
+            collision.CompareTag("Fish4")) && !isFast)
         {
-            health -= 5;
-            playerRenderer.color = Color.red;
-            Ýscolor = true;
-            StartCoroutine(ResetColor(0.3f));
-            
-            CharacterDamageSound.Play();
-            float healthScale = Mathf.Clamp01(health / 100f);
+            int damage = 0;
+            switch (collision.tag)
+            {
+                case "Fish": damage = 5; break;
+                case "Fish2": damage = 7; break;
+                case "Fish3": damage = 9; break;
+                case "Fish4": damage = 10; break;
+            }
 
-            if (healthBar != null)
-            {
-                healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
-            }
-            if (health <= 0)
-            {
-                
-                StartCoroutine(diePlayer(3));
-                BgSound.Stop();
-            }
-            else
-            {
-                ÝsdeadPlayer.SetBool("Ýsdead", false);
-            }
+            TakeDamage(damage);
         }
-
-        else if (collision.CompareTag("Fish2") && !isFast)
-        {
-            health -= 7;
-            playerRenderer.color = Color.red;
-            Ýscolor = true;
-            StartCoroutine(ResetColor(0.3f));
-
-
-            CharacterDamageSound.Play();
-
-            float healthScale = Mathf.Clamp01(health / 100f);
-
-            if (healthBar != null)
-            {
-                healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
-            }
-
-            if (health <= 0)
-            {
-
-                StartCoroutine(diePlayer(3));
-                BgSound.Stop();
-            }
-            else
-            {
-                ÝsdeadPlayer.SetBool("Ýsdead", false);
-            }
-        }
-        else if (collision.CompareTag("Fish3") && !isFast)
-        {
-            health -= 9;
-            playerRenderer.color = Color.red;
-            Ýscolor = true;
-            StartCoroutine(ResetColor(0.3f));
-            CharacterDamageSound.Play();
-            float healthScale = Mathf.Clamp01(health / 100f);
-
-            if (healthBar != null)
-            {
-                healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
-            }
-
-            if (health <= 0)
-            {
-
-                StartCoroutine(diePlayer(3));
-                BgSound.Stop();
-            }
-            else
-            {
-                ÝsdeadPlayer.SetBool("Ýsdead", false);
-            }
-        }
-
-        else if (collision.CompareTag("Fish4") && !isFast)
-        {
-            health -= 10;
-            playerRenderer.color = Color.red;
-            Ýscolor = true;
-            StartCoroutine(ResetColor(0.3f));
-            CharacterDamageSound.Play();
-            float healthScale = Mathf.Clamp01(health / 100f);
-
-            if (healthBar != null)
-            {
-                healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
-            }
-
-            if (health <= 0)
-            {
-
-                StartCoroutine(diePlayer(3));
-                BgSound.Stop();
-            }
-            else
-            {
-                ÝsdeadPlayer.SetBool("Ýsdead", false);
-            }
-        }
-
-
-        if (collision.CompareTag("Coin"))
+        else if (collision.CompareTag("Coin"))
         {
             if (GameManager.instance != null)
             {
@@ -216,34 +130,54 @@ public class Player : MonoBehaviour
 
             Destroy(collision.gameObject);
         }
-
-        if (collision.CompareTag("Finish1"))
+        else if (collision.CompareTag("Finish1"))
         {
-            istouchfinish1 = true;  
+            istouchfinish1 = true;
             SceneManager.LoadScene("Boss1");
         }
-
-        if (collision.CompareTag("Finish2"))
+        else if (collision.CompareTag("Finish2"))
         {
             istouchfinish2 = true;
             SceneManager.LoadScene("Boss2");
         }
-
-        if (collision.CompareTag("Finish3"))
+        else if (collision.CompareTag("Finish3"))
         {
             istouchfinish3 = true;
             SceneManager.LoadScene("Boss3");
         }
-        if (collision.CompareTag("Finish4"))
+        else if (collision.CompareTag("Finish4"))
         {
             istouchfinish4 = true;
             SceneManager.LoadScene("Boss4");
         }
-
-
-
-
     }
+
+    void TakeDamage(int damage)
+    {
+        health -= damage;
+        playerRenderer.color = Color.red;
+        StartCoroutine(ResetColor(0.3f));
+        if (CharacterDamageSound != null)
+            CharacterDamageSound.Play();
+
+        float healthScale = Mathf.Clamp01(health / 100f);
+        if (healthBar != null)
+        {
+            healthBar.transform.localScale = new Vector3(healthScale, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
+        }
+
+        if (health <= 0)
+        {
+            StartCoroutine(diePlayer(3));
+            if (BgSound != null)
+                BgSound.Stop();
+        }
+        else
+        {
+            ÝsdeadPlayer.SetBool("Ýsdead", false);
+        }
+    }
+
     IEnumerator diePlayer(int delay)
     {
         ÝsdeadPlayer.SetBool("Ýsdead", true);
@@ -251,25 +185,32 @@ public class Player : MonoBehaviour
         rb.velocity = Vector2.zero;
         rb.gravityScale = 0;
 
-       
         isGameOver = true;
 
         GameOverAnim.gameObject.SetActive(true);
         GameOverAnim.Play("gameOverAnim");
-           
-       
 
         if (GameManager.instance != null)
         {
-            GameManager.instance.ResetCoins(); 
-            UpdateCoinText(); 
+            GameManager.instance.ResetCoins();
+            UpdateCoinText();
         }
 
-        yield return new WaitForSeconds(delay);
+        float timer = 0f;
+        while (timer < delay)
+        {
+            timer += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
         GameOverPanel.SetActive(true);
-        Time.timeScale = 0;
     }
 
+    IEnumerator ResetColor(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        playerRenderer.color = Color.white;
+    }
 
     public void UpdateCoinText()
     {
@@ -277,13 +218,5 @@ public class Player : MonoBehaviour
         {
             CoinText.text = GameManager.instance.CoinCount.ToString();
         }
-    }
-
-    private  IEnumerator ResetColor(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        playerRenderer.color = Color.white;
-        Ýscolor = false;
-
     }
 }

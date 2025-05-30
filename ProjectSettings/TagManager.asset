@@ -20,6 +20,7 @@ TagManager:
   - Finish3
   - Finish4
   - Fish4
+  - Market
   layers:
   - Default
   - TransparentFX

@@ -5,22 +5,27 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
-   
-
-   
     void Update()
     {
-        if (Input.touchCount > 0 )
+        // Fare týklamasý (masaüstü ve WebGL için)
+        if (Input.GetMouseButtonDown(0))
+        {
+            LoadGame();
+        }
+
+        // Dokunma (mobil cihazlar için)
+        if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
             if (touch.phase == TouchPhase.Began)
             {
-               
-                SceneManager.LoadScene("LevelScene");
-               
+                LoadGame();
             }
         }
-      
-        
+    }
+
+    void LoadGame()
+    {
+        SceneManager.LoadScene("LevelScene");
     }
 }
